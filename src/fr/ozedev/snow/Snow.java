@@ -114,7 +114,7 @@ public class Snow extends JavaPlugin{
 	            public void run() {
 	            	Iterator<? extends Player> iterator = Bukkit.getOnlinePlayers().iterator();
 	        		while(iterator.hasNext()){
-	        			iterator.next().kickPlayer("Partie terminée");
+	        			ChangeServ.changeServ("lobby", iterator.next(), instance);
 	        		}
 	            	Bukkit.getServer().reload();
 	            }
