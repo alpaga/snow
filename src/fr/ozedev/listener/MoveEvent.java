@@ -19,18 +19,22 @@ public class MoveEvent implements Listener{
 		player.setSaturation(20);
 		
 		if(player.getLocation().getBlockY() <= 0){
-			if(snowPlayer.getLife() > 1){
-				player.teleport(snowPlayer.getLoc());
-				snowPlayer.setLife(snowPlayer.getLife()-1);
-				player.setMaxHealth(snowPlayer.getLife()*2);
-				player.sendMessage("§b[SnowPunch] §aVous êtes tomber il ne vous reste que §c"+snowPlayer.getLife()+"§a vie(s)");
+			if(Snow.getGameStart() == true){
+				if(snowPlayer.getLife() > 1){
+					player.teleport(snowPlayer.getLoc());
+					snowPlayer.setLife(snowPlayer.getLife()-1);
+					player.setMaxHealth(snowPlayer.getLife()*2);
+					player.sendMessage("§b[SnowPunch] §aVous êtes tomber il ne vous reste que §c"+snowPlayer.getLife()+"§a vie(s)");
+				}else{
+					player.teleport(new Location(player.getWorld(), 14, 59, 94));
+					player.setGameMode(GameMode.SPECTATOR);
+					snowPlayer.setInLife(false);
+					Bukkit.broadcastMessage("§b[SnowPunch] §aLe joueur §c"+player.getName().toString()+"§a est mort");
+					player.sendMessage("§b[SnowPunch] §aVous êtes mort");
+					Snow.checkIfGameItEnd();
+				}
 			}else{
 				player.teleport(new Location(player.getWorld(), 14, 59, 94));
-				player.setGameMode(GameMode.SPECTATOR);
-				snowPlayer.setInLife(false);
-				Bukkit.broadcastMessage("§b[SnowPunch] §aLe joueur §c"+player.getName().toString()+"§a est mort");
-				player.sendMessage("§b[SnowPunch] §aVous êtes mort");
-				Snow.checkIfGameItEnd();
 			}
 		}
 	}

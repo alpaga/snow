@@ -95,7 +95,9 @@ public class Snow extends JavaPlugin{
 		while(iterator.hasNext()){
 			Player player = iterator.next();
 			SnowPlayer snowPlayer = get(player);
-			if(snowPlayer.getInLife() == true) playerInLife++;
+			if(snowPlayer != null){
+				if(snowPlayer.getInLife() == true) playerInLife++;
+			}
 		}
 		if(playerInLife >= 2){
 			return;
@@ -104,7 +106,7 @@ public class Snow extends JavaPlugin{
 			while(iterator2.hasNext()){
 				Player player = iterator2.next();
 				SnowPlayer snowPlayer = get(player);
-				if(snowPlayer.getInLife() == true){
+				if(snowPlayer != null) if(snowPlayer.getInLife() == true){
 					Bukkit.broadcastMessage("§b[SnowPunch] §aLa partie est terminé");
 					Bukkit.broadcastMessage("§b[SnowPunch] §c"+player.getName()+" §aest le gagnant");	
 				} 
