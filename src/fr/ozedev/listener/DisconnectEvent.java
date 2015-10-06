@@ -11,7 +11,6 @@ public class DisconnectEvent implements Listener{
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent event){
 		Player player = event.getPlayer();
-		Snow.initPlayer(player);
 		event.setQuitMessage("§b[SnowPunch] §aLe joueur §c"+player.getName()+" §a vient de se déconnecter");
 		Snow.checkIfGameItEnd();
 	}

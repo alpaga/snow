@@ -23,7 +23,7 @@ public class Snow extends JavaPlugin{
 	private static boolean gameStart						 = false;
 	private static Map<String, SnowPlayer> snowPlayer		 = new HashMap<>();
 	private static int compteur								 = 15;
-	static Location[] loc 											 = {new Location(Bukkit.getWorld("world"),-15,59,96),new Location(Bukkit.getWorld("world"),1,59,80),new Location(Bukkit.getWorld("world"),17,59,96),new Location(Bukkit.getWorld("world"),1,59,112)};
+	static Location[] loc 									 = {new Location(Bukkit.getWorld("world"),-5,49,86),new Location(Bukkit.getWorld("world"),-5,49,100),new Location(Bukkit.getWorld("world"),-19,49,100),new Location(Bukkit.getWorld("world"),-19,48,86)};
 	
 	public void onEnable(){
 		PluginManager pm = Bukkit.getPluginManager();
@@ -45,12 +45,12 @@ public class Snow extends JavaPlugin{
 		
 		if(Snow.getGameStart() == true){
 			player.sendMessage("§b[SnowPunch] §aLe jeu a déjà commencer vous êtes donc un spectateur");
-			player.teleport(new Location(player.getWorld(), 1, 86, 96));
+			player.teleport(new Location(player.getWorld(), 14, 59, 94));
 			player.setGameMode(GameMode.SPECTATOR);
 			snowPlayer.setInLife(false);
 		}else {
 			player.setGameMode(GameMode.ADVENTURE);
-			player.teleport(new Location(player.getWorld(), 1, 86, 96));
+			player.teleport(new Location(player.getWorld(), 14, 59, 94));
 			player.setMaxHealth(snowPlayer.getLife()*2);
 			player.setHealth(snowPlayer.getLife()*2);
 			player.getInventory().clear();
