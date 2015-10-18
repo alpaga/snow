@@ -15,6 +15,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import fr.ozedev.item.ChangeMap;
 import fr.ozedev.listener.*;
 import fr.ozedev.snow.SnowPlayer;
 
@@ -22,8 +23,9 @@ public class Snow extends JavaPlugin{
 	private static Plugin instance;
 	private static boolean gameStart						 = false;
 	private static Map<String, SnowPlayer> snowPlayer		 = new HashMap<>();
-	private static int compteur								 = 15;
+	private static int compteur								 = 30;
 	static Location[] loc 									 = {new Location(Bukkit.getWorld("world"),-5,49,86),new Location(Bukkit.getWorld("world"),-5,49,100),new Location(Bukkit.getWorld("world"),-19,49,100),new Location(Bukkit.getWorld("world"),-19,48,86)};
+	static Location[] loc2 									 = {new Location(Bukkit.getWorld("world"),109,50.30,113),new Location(Bukkit.getWorld("world"),123,50.30,113),new Location(Bukkit.getWorld("world"),116,50.30,120),new Location(Bukkit.getWorld("world"),116,50.30,106)};
 	
 	public void onEnable(){
 		PluginManager pm = Bukkit.getPluginManager();
@@ -33,7 +35,8 @@ public class Snow extends JavaPlugin{
 		pm.registerEvents(new DamageEvent(), instance);
 		pm.registerEvents(new InteractEvent(), instance);
 		pm.registerEvents(new DropEvent(), instance);
-		pm.registerEvents(new DisconnectEvent(), this);
+		pm.registerEvents(new DisconnectEvent(), instance);
+		pm.registerEvents(new InventoryEvent(), instance);
 	}
 	public static Plugin getInstance(){return instance;}
 	public static boolean getGameStart() {return gameStart;}
@@ -48,12 +51,13 @@ public class Snow extends JavaPlugin{
 			player.teleport(new Location(player.getWorld(), 14, 59, 94));
 			player.setGameMode(GameMode.SPECTATOR);
 			snowPlayer.setInLife(false);
-		}else {
+		}else{
 			player.setGameMode(GameMode.ADVENTURE);
 			player.teleport(new Location(player.getWorld(), 14, 59, 94));
 			player.setMaxHealth(snowPlayer.getLife()*2);
 			player.setHealth(snowPlayer.getLife()*2);
 			player.getInventory().clear();
+			player.getInventory().addItem(ChangeMap.getTheChangeMap());
 		}
 	}
 	public static void startGame(){
@@ -62,23 +66,46 @@ public class Snow extends JavaPlugin{
             @Override
             public void run() {
             	if(compteur > 0 && Bukkit.getOnlinePlayers().size() >= 2){
-            		if(compteur == 15 || compteur == 10 || compteur <= 5) Bukkit.broadcastMessage("§b[SnowPunch] §aLe jeu commence dans §c"+compteur+" §a seconde(s)");
+            		if(compteur == 30 || compteur == 15 || compteur == 10 || compteur <= 5) Bukkit.broadcastMessage("§b[SnowPunch] §aLe jeu commence dans §c"+compteur+" §a seconde(s)");
             		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 	                scheduler.scheduleSyncDelayedTask(instance, this, 20L);
 	                compteur --;
             	}else if(compteur <= 0){
             		Iterator<? extends Player> iterator = Bukkit.getOnlinePlayers().iterator();
             		
+            		int voteForCandies = 0;
+            		int voteForNormal = 0;
+            		
             		Snow.setGameStart(true);
             		
             		int i = 0;
             		
+            		
             		while(iterator.hasNext()){
             			Player player = iterator.next();
-            			player.teleport(loc[i]);
+            			SnowPlayer snowPlayer = Snow.get(player);
+            			if(snowPlayer.getVote() == 0) voteForCandies++;
+            			else if(snowPlayer.getVote() == 1) voteForNormal++;
+            		}
+            		
+            		if(voteForCandies > voteForNormal) Bukkit.broadcastMessage("§b[SnowPunch] §aLa map choisie est §aCandies");
+            		else Bukkit.broadcastMessage("§b[SnowPunch] §aLa map choisie est §cNormal");
+            		
+            		Iterator<? extends Player> iterator2 = Bukkit.getOnlinePlayers().iterator();
+            		
+            		while(iterator2.hasNext()){
+            			Player player = iterator2.next();
+            			if(voteForCandies > voteForNormal){
+	            			player.teleport(loc[i]);
+	            			get(player).setLoc(loc[i]);
+	            			i++;
+            			}else{
+            				player.teleport(loc2[i]);
+	            			get(player).setLoc(loc2[i]);
+	            			i++;
+            			}
+            			player.getInventory().clear();
             			player.getInventory().addItem(new ItemStack(Material.SNOW_BALL));
-            			get(player).setLoc(loc[i]);
-            			i++;
             		}
             	}else{
             		Bukkit.broadcastMessage("§b[SnowPunch]§a Un joueur viens de se déconnecter §c["+Bukkit.getOnlinePlayers().size() +"/4]§a, le compte a rebour est donc stopé");
